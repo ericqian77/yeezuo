@@ -13,6 +13,12 @@ body {
     flex-direction: column;
     min-height: 100vh;
     background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
+    animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Header styles */
@@ -49,6 +55,13 @@ main {
     font-size: 6rem;
     margin-bottom: 1rem;
     color: #2c3e50;
+    animation: pulse 4s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 #start-stop-btn {
@@ -59,11 +72,15 @@ main {
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s, transform 0.1s;
 }
 
 #start-stop-btn:hover {
     background-color: #2ecc71;
+}
+
+#start-stop-btn:active {
+    transform: scale(0.95);
 }
 
 /* Progress tracker styles */
@@ -71,6 +88,50 @@ main {
     text-align: center;
     font-size: 1.2rem;
     color: #34495e;
+    margin-bottom: 1rem;
+}
+
+/* Background selector styles */
+#background-selection {
+    margin-top: 1rem;
+    text-align: center;
+    position: relative;
+}
+
+#background-selector {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.9rem;
+    border-radius: 15px;
+    border: 1px solid rgba(189, 195, 199, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #34495e;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 25px; /* Space for custom arrow */
+}
+
+#background-selector:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#background-selector:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+}
+
+#background-selection::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #34495e;
+    font-size: 0.8rem;
+    opacity: 0.7;
 }
 
 /* Breathing animation */
@@ -125,5 +186,14 @@ footer .attribution a:hover {
     .breathing-circle {
         width: 150px;
         height: 150px;
+    }
+
+    #start-stop-btn {
+        font-size: 1rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    #progress-tracker, #background-selection {
+        font-size: 1rem;
     }
 }

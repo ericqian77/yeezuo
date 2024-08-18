@@ -2,10 +2,19 @@
 const timerDisplay = document.getElementById('timer-display');
 const startStopBtn = document.getElementById('start-stop-btn');
 const todayTimeDisplay = document.getElementById('today-time');
+const backgroundSelector = document.getElementById('background-selector');
 
 // Audio element
 const audio = new Audio('audio/misty-forests-rainy-seasons_001.mp3');
-audio.loop = true; // This will make the audio loop continuously
+audio.loop = true;
+
+// Background options
+const backgrounds = [
+    'linear-gradient(to bottom right, #e0f7fa, #b2ebf2)',
+    'linear-gradient(to bottom right, #e8f5e9, #c8e6c9)',
+    'linear-gradient(to bottom right, #fff3e0, #ffe0b2)',
+    'linear-gradient(to bottom right, #f3e5f5, #e1bee7)'
+];
 
 let intervalId;
 let isRunning = false;
@@ -19,12 +28,42 @@ function updateDisplay(time) {
     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
+// Fade in audio
+function fadeInAudio(duration = 2000) {
+    audio.volume = 0;
+    audio.play();
+    let start = Date.now();
+    let timer = setInterval(() => {
+        let timePassed = Date.now() - start;
+        if (timePassed >= duration) {
+            clearInterval(timer);
+            audio.volume = 1;
+            return;
+        }
+        audio.volume = timePassed / duration;
+    }, 50);
+}
+
+// Fade out audio
+function fadeOutAudio(duration = 2000) {
+    let start = Date.now();
+    let timer = setInterval(() => {
+        let timePassed = Date.now() - start;
+        if (timePassed >= duration) {
+            clearInterval(timer);
+            audio.pause();
+            audio.volume = 1;
+            return;
+        }
+        audio.volume = 1 - (timePassed / duration);
+    }, 50);
+}
+
 // Start or stop the timer
 function toggleTimer() {
     if (isRunning) {
         clearInterval(intervalId);
-        audio.pause();
-        audio.currentTime = 0; // Reset audio to beginning
+        fadeOutAudio();
         startStopBtn.textContent = 'Start Session';
         todaySeconds += seconds;
         updateTodayTime();
@@ -35,7 +74,7 @@ function toggleTimer() {
             seconds++;
             updateDisplay(seconds);
         }, 1000);
-        audio.play();
+        fadeInAudio();
         startStopBtn.textContent = 'End Session';
     }
     isRunning = !isRunning;
@@ -60,15 +99,28 @@ function checkAndResetDaily() {
     }
 }
 
-// Event listener for start/stop button
-startStopBtn.addEventListener('click', toggleTimer);
+// Change background
+function changeBackground(index) {
+    document.body.style.background = backgrounds[index];
+    localStorage.setItem('selectedBackground', index);
+}
 
-// Load today's meditation time from local storage and check for reset
+// Event listeners
+startStopBtn.addEventListener('click', toggleTimer);
+backgroundSelector.addEventListener('change', (e) => changeBackground(e.target.value));
+
+// Initialize
 window.addEventListener('load', () => {
     checkAndResetDaily();
     const storedTime = localStorage.getItem('todayMeditationTime');
     if (storedTime) {
         todaySeconds = parseInt(storedTime, 10);
         updateTodayTime();
+    }
+    
+    const storedBackground = localStorage.getItem('selectedBackground');
+    if (storedBackground) {
+        changeBackground(storedBackground);
+        backgroundSelector.value = storedBackground;
     }
 });
