@@ -8,6 +8,7 @@ YeeZuo (谐音 "一坐") is a simple web-based mindfulness application designed 
 - Meditation timer
 - Soothing background music
 - Basic progress tracking
+- Optional dark mode
 
 ## Technical Stack
 
